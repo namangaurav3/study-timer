@@ -18,11 +18,13 @@ jobs:
       - name: Build
         run: |
           DIR=$(dirname "$(find . -name settings.gradle.kts -not -path './.git/*' | head -n 1)")
-          echo "Project found at: $DIR"
           cd "$DIR"
           gradle assembleDebug --no-daemon
           mkdir -p "$GITHUB_WORKSPACE/out"
           cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/out/"
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: StudyTimer-apk
+          path: out/app-debug.apk
+          if-no-files-found: error
